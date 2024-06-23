@@ -1,0 +1,16 @@
+package com.effectivemobile.csvgen.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Можно указать, какие столбцы не будут записаны
+ */
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ExcludeColumn {
+    String[] nameOfColumns() default "";
+}
