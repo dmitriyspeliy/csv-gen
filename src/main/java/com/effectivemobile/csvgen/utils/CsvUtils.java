@@ -1,8 +1,9 @@
 package com.effectivemobile.csvgen.utils;
 
 import com.effectivemobile.csvgen.annotation.ExcludeColumn;
-import com.effectivemobile.csvgen.dto.Report;
+import com.effectivemobile.csvgen.utils.exception.ErrorInWriteCsvFile;
 import com.opencsv.CSVWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,57 +14,83 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class CsvUtils {
 
+    private Field[] fields;
+    private Set<String> columnsExcludeName;
+
     /**
-     * Write info from {@link Report} list to file.csv
+     * Write info from object list to file.csv
      */
-    public void writeDataLineByLine(String filePath, List<? extends Report> list) throws IOException {
-        if (list.size() == 0 || filePath == null)
-            throw new IllegalArgumentException("FilePath is null or list is null");
+    public <T> void writeDataLineByLine(String filePath, List<T> list) throws ErrorInWriteCsvFile {
+        log.info("Start writing...");
+        File file = checkParamAndCreateFile(list, filePath);
+        log.info("Create file in filePath " + filePath);
+        try (FileWriter outFile = new FileWriter(file); CSVWriter writer = new CSVWriter(outFile)) {
 
-        File file = new File(filePath);
-        FileWriter outFile = new FileWriter(file);
+            T report = list.get(0);
+            getExcludeColumn(report);
 
-        try (CSVWriter writer = new CSVWriter(outFile)) {
-            // adding header to csv
-            Report report = list.get(0);
-            Set<String> columnsExcludeName = new HashSet<>();
-            if (report.getClass().isAnnotationPresent(ExcludeColumn.class)) {
-                columnsExcludeName = Arrays.stream(report.getClass().getAnnotation(ExcludeColumn.class).nameOfColumns())
-                        .collect(Collectors.toSet());
-            }
-            Field[] fields = report.getClass().getDeclaredFields();
-            ArrayList<String> arrayList = new ArrayList<>();
+            fields = report.getClass().getDeclaredFields();
 
-            //set header
-            for (Field field : fields) {
-                if (!columnsExcludeName.contains(field.getName())) {
-                    arrayList.add(field.getName().toUpperCase());
-                }
-            }
-
-            writer.writeNext(arrayList.toArray(new String[0]));
+            writer.writeNext(writeHeader());
 
             //set value cell
-            for (Report item : list) {
-                ArrayList<String> arr = new ArrayList<>();
-                for (int j = 0; j < item.getClass().getDeclaredFields().length; j++) {
-                    String nameOfColumn = item.getClass().getDeclaredFields()[j].getName().toLowerCase();
-                    if (!columnsExcludeName.contains(nameOfColumn)) {
-                        Field f = item.getClass().getDeclaredField(nameOfColumn);
-                        f.setAccessible(true);
-                        String value = (String) f.get(item);
-                        arr.add(value);
-                    }
-                }
-                writer.writeNext(arr.toArray(new String[0]));
-            }
+            setValueInCell(list, writer);
+            log.info("Done");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+            log.error(e.getMessage());
+            throw new ErrorInWriteCsvFile(e.getMessage());
         }
     }
+
+    private <T> File checkParamAndCreateFile(List<T> list, String filePath) throws ErrorInWriteCsvFile {
+        if (list.size() == 0 || filePath == null) {
+            log.error("FilePath is null or list is null");
+            throw new ErrorInWriteCsvFile("FilePath is null or list is null");
+        }
+
+        return new File(filePath);
+    }
+
+    private <T> void getExcludeColumn(T report) {
+        columnsExcludeName = new HashSet<>();
+        if (report.getClass().isAnnotationPresent(ExcludeColumn.class)) {
+            columnsExcludeName = Arrays.stream(report.getClass().getAnnotation(ExcludeColumn.class).nameOfColumns())
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    private String[] writeHeader() {
+        List<String> headers = new ArrayList<>();
+        //set header
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            if (!columnsExcludeName.contains(fieldName)) {
+                headers.add(fieldName.toUpperCase());
+            }
+        }
+        return headers.toArray(new String[0]);
+    }
+
+    private <T> void setValueInCell(List<T> list, CSVWriter writer) throws NoSuchFieldException, IllegalAccessException {
+        //set value cell
+        for (T item : list) {
+            ArrayList<String> res = new ArrayList<>();
+            for (Field field : fields) {
+                String nameOfColumn = field.getName().toLowerCase();
+                if (!columnsExcludeName.contains(nameOfColumn)) {
+                    Field f = item.getClass().getDeclaredField(nameOfColumn);
+                    f.setAccessible(true);
+                    String value = (String) f.get(item);
+                    res.add(value);
+                }
+            }
+            writer.writeNext(res.toArray(new String[0]));
+        }
+    }
+
+
 }

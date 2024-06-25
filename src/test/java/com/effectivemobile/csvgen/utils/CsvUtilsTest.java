@@ -3,6 +3,7 @@ package com.effectivemobile.csvgen.utils;
 import com.effectivemobile.csvgen.dto.ReportTest;
 import com.effectivemobile.csvgen.dto.ReportTestWithAllExcludeColumn;
 import com.effectivemobile.csvgen.dto.ReportTestWithExcludeCountry;
+import com.effectivemobile.csvgen.utils.exception.ErrorInWriteCsvFile;
 import com.opencsv.CSVReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +67,7 @@ public class CsvUtilsTest {
     }
 
     @Test
-    public void smoke_test() throws IOException {
+    public void smoke_test() throws ErrorInWriteCsvFile {
         csvUtils.writeDataLineByLine(filePath, listWithReportTest);
 
         List<List<String>> lists = readFile(filePath);
@@ -76,7 +77,7 @@ public class CsvUtilsTest {
     }
 
     @Test
-    public void when_exclude_one_column_get_list_size_equals_one() throws IOException {
+    public void when_exclude_one_column_get_list_size_equals_one() throws ErrorInWriteCsvFile {
         csvUtils.writeDataLineByLine(filePath, reportTestWithExcludeCountries);
 
         List<List<String>> lists = readFile(filePath);
@@ -85,7 +86,7 @@ public class CsvUtilsTest {
     }
 
     @Test
-    public void when_exclude_all_columns_get_list_size_equals_blank() throws IOException {
+    public void when_exclude_all_columns_get_list_size_equals_blank() throws ErrorInWriteCsvFile {
         csvUtils.writeDataLineByLine(filePath, reportTestWithAllExcludeColumnList);
 
         List<List<String>> lists = readFile(filePath);
