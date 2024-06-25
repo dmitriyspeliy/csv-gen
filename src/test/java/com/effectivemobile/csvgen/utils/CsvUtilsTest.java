@@ -1,5 +1,6 @@
 package com.effectivemobile.csvgen.utils;
 
+import com.effectivemobile.csvgen.dto.Report;
 import com.effectivemobile.csvgen.dto.ReportTest;
 import com.effectivemobile.csvgen.dto.ReportTestWithAllExcludeColumn;
 import com.effectivemobile.csvgen.dto.ReportTestWithExcludeCountry;
@@ -20,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CsvUtilsTest {
 
-    private String filePath = "src/main/resources/report/test.csv";
+    private String filePath = "src/main/resources/test.csv";
     private CsvUtils csvUtils;
-    private List<ReportTest> listWithReportTest;
+    private List<Report> listWithReportTest;
     private List<ReportTestWithExcludeCountry> reportTestWithExcludeCountries;
     private List<ReportTestWithAllExcludeColumn> reportTestWithAllExcludeColumnList;
 
@@ -31,9 +32,9 @@ public class CsvUtilsTest {
         csvUtils = new CsvUtils();
         listWithReportTest = new ArrayList<>();
 
-        ReportTest report1 = new ReportTest("TEST1", "VALUE1");
-        ReportTest report2 = new ReportTest("TEST2", "VALUE2");
-        ReportTest report3 = new ReportTest("TEST3", "VALUE3");
+        Report report1 = new Report("TEST1", "VALUE1");
+        Report report2 = new Report("TEST2", "VALUE2");
+        Report report3 = new Report("TEST3", "VALUE3");
 
         listWithReportTest.add(report1);
         listWithReportTest.add(report2);

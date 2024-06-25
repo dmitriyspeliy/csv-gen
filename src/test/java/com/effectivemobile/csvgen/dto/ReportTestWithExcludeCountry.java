@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 @ExcludeColumn(nameOfColumns = {"type"})
-public class ReportTestWithExcludeCountry extends Report{
-    public ReportTestWithExcludeCountry(String name, String type) {
-        super(name, type);
-    }
+public class ReportTestWithExcludeCountry {
+    private String name;
+    private String type;
 }

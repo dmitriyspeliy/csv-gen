@@ -17,7 +17,7 @@ public class CsvGenApplication {
     public static void main(String[] args) throws ErrorInWriteCsvFile {
         CsvUtils csvUtils = new CsvUtils();
         csvService = new CsvService(csvUtils);
-        csvService.makeReport("src/main/resources/report/test1.csv", List.of(new Report("Test", "Test1"), new Report("Test", "Test1")));
+        csvService.makeReport("src/main/resources/test1.csv", List.of(new Report("Test", "Test1"), new Report("Test", "Test1")));
         SpringApplication.run(CsvGenApplication.class, args);
     }
 
