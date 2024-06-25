@@ -32,9 +32,9 @@ public class CsvUtilsTest {
         csvUtils = new CsvUtils();
         listWithReportTest = new ArrayList<>();
 
-        Report report1 = new Report("TEST1", "VALUE1");
-        Report report2 = new Report("TEST2", "VALUE2");
-        Report report3 = new Report("TEST3", "VALUE3");
+        Report report1 = new Report("TEST1", "VALUE1", "COLUMN1", "COLUMN2", "COLUMN2", "COLUMN2");
+        Report report2 = new Report("TEST1", "VALUE1", "COLUMN1", "COLUMN2", "COLUMN2", "COLUMN2");
+        Report report3 = new Report("TEST1", "VALUE1", "COLUMN1", "COLUMN2", "COLUMN2", "COLUMN2");
 
         listWithReportTest.add(report1);
         listWithReportTest.add(report2);
