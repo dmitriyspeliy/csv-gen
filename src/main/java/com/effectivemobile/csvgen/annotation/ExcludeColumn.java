@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Можно указать, какие столбцы не будут записаны
+ * Можно указать, какие столбцы не будут записаны в нижним регистре
  */
 
 @Target({ElementType.TYPE})
