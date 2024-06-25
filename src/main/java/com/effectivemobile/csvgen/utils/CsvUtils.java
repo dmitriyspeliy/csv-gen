@@ -47,7 +47,7 @@ public class CsvUtils {
     }
 
     private <T> File checkParamAndCreateFile(List<T> list, String filePath) throws ErrorInWriteCsvFile {
-        if (list.size() == 0 || filePath == null) {
+        if (list.size() == 0 || filePath == null || filePath.equals("")) {
             log.error("FilePath is null or list is null");
             throw new ErrorInWriteCsvFile("FilePath is null or list is null");
         }

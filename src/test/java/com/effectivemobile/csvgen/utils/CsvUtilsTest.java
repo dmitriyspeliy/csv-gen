@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class CsvUtilsTest {
@@ -93,6 +93,42 @@ public class CsvUtilsTest {
         List<List<String>> lists = readFile(filePath);
 
         assertEquals("", lists.get(0).get(0));
+    }
+
+    @Test
+    public void when_get_param_null_return_exception() {
+        Exception exception = assertThrows(ErrorInWriteCsvFile.class, () -> {
+            csvUtils.writeDataLineByLine(null, reportTestWithAllExcludeColumnList);
+        });
+
+        String expectedMessage = "FilePath is null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void when_get_param_empty_return_exception() {
+        Exception exception = assertThrows(ErrorInWriteCsvFile.class, () -> {
+            csvUtils.writeDataLineByLine("", reportTestWithAllExcludeColumnList);
+        });
+
+        String expectedMessage = "FilePath is null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void when_get_param_list_is_empty_return_exception() {
+        Exception exception = assertThrows(ErrorInWriteCsvFile.class, () -> {
+            csvUtils.writeDataLineByLine(filePath, List.of());
+        });
+
+        String expectedMessage = "list is null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     private List<List<String>> readFile(String filePath) {
